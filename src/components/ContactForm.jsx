@@ -1,7 +1,9 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { nanoid } from 'nanoid';
-import css from './ContactForm.module.css';
+import { useDispatch } from 'react-redux'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+import { nanoid } from 'nanoid'
+import { addContact } from '../redux/contactsSlice'
+import css from './ContactForm.module.css'
 
 const contactValidation = Yup.object({
   name: Yup.string()
@@ -12,18 +14,20 @@ const contactValidation = Yup.object({
     .min(3, 'Must be at least 3 characters')
     .max(50, 'Must be 50 characters or less')
     .required('Required'),
-});
+})
 
-export default function ContactForm({ onAdd }) {
+export default function ContactForm() {
+  const dispatch = useDispatch()
+
   const handleSubmit = (values, actions) => {
     const newContact = {
       id: nanoid(),
       name: values.name,
       number: values.number,
-    };
-    onAdd(newContact);
-    actions.resetForm();
-  };
+    }
+    dispatch(addContact(newContact))
+    actions.resetForm()
+  }
 
   return (
     <Formik
@@ -47,5 +51,5 @@ export default function ContactForm({ onAdd }) {
         <button type="submit" className={css.btn}>Add contact</button>
       </Form>
     </Formik>
-  );
+  )
 }
